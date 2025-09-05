@@ -1,5 +1,6 @@
 package com.example.careerservice.scrapper;
 
+import com.example.careerservice.scrapper.impl.BulldogjobScrapper;
 import com.example.careerservice.scrapper.impl.PracujScrapper;
 import com.example.careerservice.scrapper.impl.TheProtocolScrapper;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +14,8 @@ public class ScrapperFactory {
     public List<JobScrapper> scrappers() {
         return List.of(
             new PracujScrapper(),
-            new TheProtocolScrapper()
+            new TheProtocolScrapper(),
+            new BulldogjobScrapper()
         );
     }
 }
