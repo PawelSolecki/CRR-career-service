@@ -13,17 +13,21 @@ import static org.mockito.Mockito.*;
 class ScrapperServiceTest {
     private JobScrapper pracujScrapper;
     private JobScrapper protocolScrapper;
+    private JobScrapper bulldogjobScrapper;
     private ScrapperService scrapperService;
+
 
     @BeforeEach
     void setUp() {
         pracujScrapper = mock(JobScrapper.class);
         protocolScrapper = mock(JobScrapper.class);
+        bulldogjobScrapper = mock(JobScrapper.class);
 
         when(pracujScrapper.getSourceName()).thenReturn("pracuj.pl");
         when(protocolScrapper.getSourceName()).thenReturn("theprotocol.it");
+        when(bulldogjobScrapper.getSourceName()).thenReturn("bulldogjob.pl");
 
-        scrapperService = new ScrapperService(List.of(pracujScrapper, protocolScrapper));
+        scrapperService = new ScrapperService(List.of(pracujScrapper, protocolScrapper, bulldogjobScrapper));
     }
 
     @Test
@@ -40,6 +44,7 @@ class ScrapperServiceTest {
         assertEquals("Java Dev", result.getTitle());
         verify(pracujScrapper).scrape(url);
         verify(protocolScrapper, never()).scrape(anyString());
+        verify(bulldogjobScrapper, never()).scrape(anyString());
     }
 
     @Test
@@ -56,6 +61,25 @@ class ScrapperServiceTest {
         assertEquals("Backend Dev", result.getTitle());
         verify(protocolScrapper).scrape(url);
         verify(pracujScrapper, never()).scrape(anyString());
+        verify(bulldogjobScrapper, never()).scrape(anyString());
+    }
+
+    @Test
+    void shouldUseBulldogJobScrapper_whenUrlMatches() {
+        // given
+        String url = "https://bulldogjob.pl/jobs/567";
+        JobOffer expectedOffer = JobOffer.builder().title("Backend Dev").build();
+        when(bulldogjobScrapper.scrape(url)).thenReturn(expectedOffer);
+
+        // when
+        JobOffer result = scrapperService.scrape(url);
+
+        // then
+        assertEquals("Backend Dev", result.getTitle());
+        verify(bulldogjobScrapper).scrape(url);
+        verify(pracujScrapper, never()).scrape(anyString());
+        verify(protocolScrapper, never()).scrape(anyString());
+
     }
 
     @Test
@@ -69,6 +93,7 @@ class ScrapperServiceTest {
             () -> scrapperService.scrape(url));
         verify(pracujScrapper, never()).scrape(anyString());
         verify(protocolScrapper, never()).scrape(anyString());
+        verify(bulldogjobScrapper, never()).scrape(anyString());
     }
 
     @Test
@@ -82,6 +107,7 @@ class ScrapperServiceTest {
 
         verify(pracujScrapper, never()).scrape(anyString());
         verify(protocolScrapper, never()).scrape(anyString());
+        verify(bulldogjobScrapper, never()).scrape(anyString());
     }
 
 }
