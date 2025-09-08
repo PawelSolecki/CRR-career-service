@@ -42,7 +42,6 @@ public class BulldogjobScrapper implements JobScrapper {
         List<String> responsibilities = doc.select(
             "body div main div div div div div section div"
         ).get(0).select("ul li").eachText();
-        System.out.println(responsibilities);
 
         return JobOffer.builder()
             .company(company)
