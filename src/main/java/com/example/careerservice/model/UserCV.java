@@ -3,41 +3,24 @@ package com.example.careerservice.model;
 import java.time.LocalDate;
 import java.util.List;
 
-
-
 public class UserCV {
-    enum LanguageLevel {
-        BASIC,
-        INTERMEDIATE,
-        ADVANCED,
-        NATIVE,
-    }
+    public enum LanguageLevel {
+        A1,
+        A2,
+        B1,
+        B2,
+        C1,
+        C2
 
-    enum Level {
-        JUNIOR,
-        MID,
-        SENIOR,
-        LEAD,
-        PRINCIPAL,
-        INTERN,
     }
 
     public PersonalInfo personalInfo;
-    public List<String> technologies;
+    public List<String> skills;
     public List<Experience> experience;
     public List<Education> education;
-    public List<Skill> skills;
     public List<Language> languages;
     public List<Certification> certifications;
     public List<Project> projects;
-    public List<Internship> interships;
-
-    public static class Summary {
-
-        public String text;
-        public List<String> tech;
-    }
-
     public static class PersonalInfo {
 
         public String firstName;
@@ -59,7 +42,7 @@ public class UserCV {
         public String location;
         public LocalDate startDate;
         public LocalDate endDate;
-        public Summary summary;
+        public List<Summary> summaries;
     }
 
     public static class Education {
@@ -69,14 +52,6 @@ public class UserCV {
         public String fieldOfStudy;
         public LocalDate startDate;
         public LocalDate endDate;
-    }
-
-    public static class Skill {
-
-        public String name;
-        public Level level;
-        public Double yearsOfExperience;
-        public List<String> keywords;
     }
 
     public static class Language {
@@ -93,22 +68,13 @@ public class UserCV {
     }
 
     public static class Project {
-
         public String name;
-        public String description;
         public String url;
-        public List<String> technologies;
-        public Summary summary;
+        public List<Summary> summaries;
     }
 
-    public static class Internship {
-
-        public String position;
-        public String company;
-        public String url;
-        public String location;
-        public LocalDate startDate;
-        public LocalDate endDate;
-        public Summary summary;
+    public static class Summary {
+        public String text;
+        public List<String> technologies;
     }
 }
