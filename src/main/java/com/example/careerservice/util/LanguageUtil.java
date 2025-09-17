@@ -8,12 +8,6 @@ public class LanguageUtil {
             Language.EN, "About me",
             Language.PL, "O mnie"
     );
-
-    public static final Map<Language, String> POSITION = Map.of(
-            Language.EN, "Job Position",
-            Language.PL, "Stanowisko"
-    );
-
     public static final Map<Language, String> SKILLS = Map.of(
             Language.EN, "Skills",
             Language.PL, "Umiejętności"
