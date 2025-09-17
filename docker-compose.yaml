@@ -1,0 +1,9 @@
+services:
+
+  career-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: career-service
+    ports:
+      - "8081:8081"

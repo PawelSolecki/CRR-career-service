@@ -26,12 +26,12 @@ class TheProtocolScrapperTest {
             JobOffer offer = scrapper.scrape(OFFER);
             assertNotNull(offer);
             assertEquals(OFFER, offer.getUrl());
-            assertNotNull(offer.getTitle());
-            assertNotNull(offer.getCompany());
-            assertNotNull(offer.getDescription());
-            assertNotNull(offer.getTechnologies());
-            assertNotNull(offer.getRequirements());
-            assertNotNull(offer.getResponsibilities());
+            assertFalse(offer.getTitle().isEmpty());
+            assertFalse(offer.getCompany().isEmpty());
+            assertFalse(offer.getDescription().isEmpty());
+            assertFalse(offer.getTechnologies().isEmpty());
+            assertFalse(offer.getRequirements().isEmpty());
+            assertFalse(offer.getResponsibilities().isEmpty());
         }
 
         @Test

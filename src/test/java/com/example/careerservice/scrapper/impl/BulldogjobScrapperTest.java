@@ -8,18 +8,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PracujScrapperTest {
-
-    private final JobScrapper scrapper = new PracujScrapper();
+class BulldogjobScrapperTest {
+    private final JobScrapper scrapper = new BulldogjobScrapper();
 
     @Test
-    void shouldReturnPracujPl() {
-        assertEquals("pracuj.pl", scrapper.getSourceName());
+    void shouldReturnBulldogjobPl() {
+        assertEquals("bulldogjob.pl", scrapper.getSourceName());
     }
 
     @Nested
     class ScrapeIntegrationTests {
-        private final static String OFFER = "https://www.pracuj.pl/praca/java-developer-warszawa,oferta,1004272427?sug=oferta_bottom_bd_3_tname_252_tgroup_D";
+        private final static String OFFER = "https://bulldogjob.pl/companies/jobs/193171-starszy-programista-java-b2b-warszawa-bank-millennium";
 
         @Test
         @Tag("integration")
@@ -30,7 +29,6 @@ class PracujScrapperTest {
             assertFalse(offer.getTitle().isEmpty());
             assertFalse(offer.getCompany().isEmpty());
             assertFalse(offer.getDescription().isEmpty());
-            assertFalse(offer.getTechnologies().isEmpty());
             assertFalse(offer.getRequirements().isEmpty());
             assertFalse(offer.getResponsibilities().isEmpty());
         }
@@ -47,6 +45,4 @@ class PracujScrapperTest {
             assertThrows(RuntimeException.class, () -> scrapper.scrape("https://www.pracuj.pl/praca/nonexistent-page,oferta,0000000"));
         }
     }
-
-
 }
