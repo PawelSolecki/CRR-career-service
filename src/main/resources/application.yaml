@@ -1,1 +1,6 @@
-spring.application.name=career-service
+spring:
+  application:
+    name: career-service
+gotenberg:
+  api:
+    url: http://localhost:3000
