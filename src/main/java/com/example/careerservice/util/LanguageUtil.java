@@ -1,5 +1,7 @@
 package com.example.careerservice.util;
 
+import com.example.careerservice.model.Language;
+
 import java.util.Map;
 
 public class LanguageUtil {
@@ -34,6 +36,9 @@ public class LanguageUtil {
 
     public static boolean isValidLanguage(String language) {
         try {
+            if (language == null || language.isEmpty()) {
+                return false;
+            }
             Language.valueOf(language);
             return true;
         } catch (IllegalArgumentException e) {

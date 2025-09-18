@@ -1,7 +1,7 @@
 package com.example.careerservice.scrapper.impl;
 
 import com.example.careerservice.scrapper.JobScrapper;
-import com.example.careerservice.scrapper.model.JobOffer;
+import com.example.careerservice.model.JobOffer;
 import com.example.careerservice.util.UrlValidator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

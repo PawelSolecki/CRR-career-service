@@ -1,46 +1,59 @@
 package com.example.careerservice.util;
 
-import com.example.careerservice.generator.model.GeneratePdfRequest;
-import com.example.careerservice.generator.model.MatchedSkill;
-import com.example.careerservice.generator.model.SkillResult;
-import com.example.careerservice.scrapper.model.JobOffer;
-import com.example.careerservice.generator.model.UserCV;
+import com.example.careerservice.model.*;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SkillAnalyzer {
 
     public static List<String> getMatchedSkillNames(GeneratePdfRequest request) {
-        UserCV cv = request.getUserCV();
+        List<String> matchedSkills = new ArrayList<>();
         JobOffer jobOffer = request.getJobOffer();
+        UserCV cv = request.getUserCV();
         SkillResult skillResult = request.getSkillResult();
 
-        if (skillResult == null || skillResult.getHardSkills() == null) {
-            return Collections.emptyList();
+        // Process hard skills
+        matchedSkills.addAll(
+                filterAndSortSkills(skillResult.getHardSkills(), cv, jobOffer)
+        );
+
+        // Process soft skills
+        matchedSkills.addAll(
+                filterAndSortSkills(skillResult.getSoftSkills(), cv, jobOffer)
+        );
+
+        // Process tools
+        matchedSkills.addAll(
+                filterAndSortSkills(skillResult.getTools(), cv, jobOffer)
+        );
+
+        return matchedSkills;
+    }
+
+    private static List<String> filterAndSortSkills(
+            List<SkillItem> skills,
+            UserCV cv,
+            JobOffer jobOffer
+    ) {
+        if (skills == null) {
+            return List.of();
         }
 
-        return skillResult.getHardSkills().stream()
-                .map(skill -> MatchedSkill.builder()
-                        .name(skill.getName())
-                        .score(skill.getScore())
-                        .inCV(isSkillInCV(skill.getName(), cv))
-                        .inJobOffer(isSkillInJobOffer(skill.getName(), jobOffer))
-                        .build())
-                .filter(skill -> skill.isInCV() && skill.isInJobOffer())
-                .sorted((s1, s2) -> Double.compare(s2.getScore(), s1.getScore()))
-                .map(MatchedSkill::getName)
-                .collect(Collectors.toList());
+        return skills.stream()
+                .filter(skill -> isSkillInCV(skill.getName(), cv)
+                        && isSkillInJobOffer(skill.getName(), jobOffer))
+                .map(SkillItem::getName)
+                .toList();
     }
 
     private static boolean isSkillInCV(String skill, UserCV cv) {
-        return cv.getSkills().stream()
+        return cv.getSkills() != null && cv.getSkills().stream()
                 .anyMatch(s -> s.equalsIgnoreCase(skill));
     }
 
     private static boolean isSkillInJobOffer(String skill, JobOffer jobOffer) {
-        return jobOffer.getTechnologies().stream()
+        return jobOffer.getTechnologies() != null && jobOffer.getTechnologies().stream()
                 .anyMatch(t -> t.equalsIgnoreCase(skill));
     }
 }

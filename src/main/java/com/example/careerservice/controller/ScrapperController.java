@@ -1,6 +1,6 @@
 package com.example.careerservice.controller;
 
-import com.example.careerservice.scrapper.model.JobOffer;
+import com.example.careerservice.model.JobOffer;
 import com.example.careerservice.service.ScrapperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

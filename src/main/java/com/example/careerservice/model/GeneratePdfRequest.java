@@ -1,7 +1,7 @@
-package com.example.careerservice.generator.model;
+package com.example.careerservice.model;
 
-import com.example.careerservice.scrapper.model.JobOffer;
-import com.example.careerservice.util.Language;
+import com.example.careerservice.validation.ValidLanguage;
+import com.example.careerservice.validation.ValidTemplate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -24,8 +24,10 @@ public class GeneratePdfRequest {
     private  SkillResult skillResult;
 
     @NotNull(message = "Template must not be blank")
+    @ValidTemplate
     private  String template;
 
     @NotNull(message = "Language must not be null")
-    private  Language language;
+    @ValidLanguage
+    private Language language;
 }

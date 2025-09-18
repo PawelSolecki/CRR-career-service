@@ -1,6 +1,6 @@
 package com.example.careerservice.controller;
 
-import com.example.careerservice.generator.model.GeneratePdfRequest;
+import com.example.careerservice.model.GeneratePdfRequest;
 import com.example.careerservice.service.PdfGeneratorService;
 import com.example.careerservice.util.FilenameUtil;
 import jakarta.validation.Valid;
