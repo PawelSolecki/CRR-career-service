@@ -1,9 +1,14 @@
 spring:
   application:
     name: career-service
-gotenberg:
-  api:
-    url: http://localhost:3000
 server:
   port: 8081
+logging:
+  level:
+    root: INFO
+    com.example.careerservice: DEBUG
+    org.springframework: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
 

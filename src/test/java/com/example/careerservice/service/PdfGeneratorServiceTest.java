@@ -1,19 +1,27 @@
 package com.example.careerservice.service;
 
-import com.example.careerservice.client.GotenbergClient;
+import com.example.careerservice.exception.TemplateNotFoundException;
 import com.example.careerservice.generator.model.GeneratePdfRequest;
+import com.example.careerservice.generator.model.SkillResult;
 import com.example.careerservice.generator.model.UserCV;
+import com.example.careerservice.scrapper.model.JobOffer;
 import com.example.careerservice.util.Language;
+import com.example.careerservice.util.LanguageUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.exceptions.TemplateInputException;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,124 +35,235 @@ class PdfGeneratorServiceTest {
     @Mock
     private SpringTemplateEngine templateEngine;
 
-    @Mock
-    private GotenbergClient gotenbergClient;
-
     private PdfGeneratorService pdfGeneratorService;
+    private static final String VALID_HTML = "<html><body>Test CV</body></html>";
+    private static final String VALID_TEMPLATE = "simple";
 
     @BeforeEach
     void setUp() {
-        pdfGeneratorService = new PdfGeneratorService(templateEngine, gotenbergClient);
+        pdfGeneratorService = new PdfGeneratorService(templateEngine);
     }
 
-    @Test
-    void shouldGeneratePdf_whenValidRequest() {
-        // given
-        GeneratePdfRequest request = createSampleRequest();
-        String htmlContent = "<html><body>Test CV</body></html>";
-        byte[] pdfContent = "PDF content".getBytes();
+    @Nested
+    @DisplayName("Basic PDF Generation")
+    class BasicPdfGeneration {
 
-        when(templateEngine.process(eq("simple"), any(Context.class))).thenReturn(htmlContent);
-        when(gotenbergClient.convertHtml(any(MultipartFile.class)))
-                .thenReturn(ResponseEntity.ok(pdfContent));
+        @Test
+        @DisplayName("Should generate PDF when request is valid")
+        void shouldGeneratePdf_whenRequestIsValid() throws IOException {
+            // given
+            GeneratePdfRequest request = createValidRequest();
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenReturn(VALID_HTML);
 
-        // when
-        Resource result = pdfGeneratorService.generatePdf(request);
+            // when
+            Resource result = pdfGeneratorService.generatePdf(request);
 
-        // then
-        assertNotNull(result);
-        verify(templateEngine).process(eq("simple"), any(Context.class));
-        verify(gotenbergClient).convertHtml(any(MultipartFile.class));
+            // then
+            assertNotNull(result);
+            assertTrue(result.getInputStream().readAllBytes().length > 0);
+            verify(templateEngine).process(eq(VALID_TEMPLATE), any(Context.class));
+        }
+
+        @Test
+        @DisplayName("Should generate PDF with Polish language")
+        void shouldGeneratePdf_withPolishLanguage() throws IOException {
+            // given
+            GeneratePdfRequest request = createValidRequestWithLanguage(Language.PL);
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenReturn(VALID_HTML);
+
+            // when
+            Resource result = pdfGeneratorService.generatePdf(request);
+
+            // then
+            assertNotNull(result);
+            assertTrue(result.getInputStream().readAllBytes().length > 0);
+        }
     }
 
-    @Test
-    void shouldThrowException_whenTemplateProcessingFails() {
-        // given
-        GeneratePdfRequest request = createSampleRequest();
-        when(templateEngine.process(eq("simple"), any(Context.class)))
-                .thenThrow(new RuntimeException("Template processing failed"));
+    @Nested
+    @DisplayName("Template Processing")
+    class TemplateProcessing {
 
-        // when & then
-        assertThrows(RuntimeException.class, () -> pdfGeneratorService.generatePdf(request));
+        @Test
+        @DisplayName("Should throw TemplateNotFoundException when template is not found")
+        void shouldThrowTemplateNotFoundException_whenTemplateNotFound() {
+            // given
+            GeneratePdfRequest request = createValidRequest();
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenThrow(new TemplateInputException("Template not found"));
+
+            // when & then
+            TemplateNotFoundException exception = assertThrows(
+                    TemplateNotFoundException.class,
+                    () -> pdfGeneratorService.generatePdf(request)
+            );
+            assertTrue(exception.getMessage().contains("Template not found"));
+        }
+
+        @Test
+        @DisplayName("Should throw TemplateNotFoundException when template returns empty content")
+        void shouldThrowTemplateNotFoundException_whenTemplateReturnsEmptyContent() {
+            // given
+            GeneratePdfRequest request = createValidRequest();
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenReturn("");
+
+            // when & then
+            TemplateNotFoundException exception = assertThrows(
+                    TemplateNotFoundException.class,
+                    () -> pdfGeneratorService.generatePdf(request)
+            );
+            assertTrue(exception.getMessage().contains("Template returned empty content"));
+        }
+
+        @Test
+        @DisplayName("Should throw TemplateNotFoundException when template returns null")
+        void shouldThrowTemplateNotFoundException_whenTemplateReturnsNull() {
+            // given
+            GeneratePdfRequest request = createValidRequest();
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenReturn(null);
+
+            // when & then
+            TemplateNotFoundException exception = assertThrows(
+                    TemplateNotFoundException.class,
+                    () -> pdfGeneratorService.generatePdf(request)
+            );
+            assertTrue(exception.getMessage().contains("Template returned empty content"));
+        }
     }
 
-    @Test
-    void shouldUseDefaultLanguage_whenLanguageNotSet() {
-        // given
-        GeneratePdfRequest request = new GeneratePdfRequest();
-        request.setUserCV(new UserCV());
-        String htmlContent = "<html><body>Test CV</body></html>";
-        byte[] pdfContent = "PDF content".getBytes();
+    @Nested
+    @DisplayName("Language Support")
+    class LanguageSupport {
 
-        when(templateEngine.process(eq("simple"), any(Context.class))).thenReturn(htmlContent);
-        when(gotenbergClient.convertHtml(any(MultipartFile.class)))
-                .thenReturn(ResponseEntity.ok(pdfContent));
+        @Test
+        @DisplayName("Should generate PDF when language is PL")
+        void shouldGeneratePdf_whenLanguageIsPL() throws IOException {
+            // given
+            GeneratePdfRequest request = createValidRequestWithLanguage(Language.PL);
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenReturn(VALID_HTML);
 
-        // when
-        Resource result = pdfGeneratorService.generatePdf(request);
+            // when
+            Resource result = pdfGeneratorService.generatePdf(request);
 
-        // then
-        assertNotNull(result);
-        assertEquals(Language.EN, request.getLanguage());
+            // then
+            assertNotNull(result);
+            assertTrue(result.getInputStream().readAllBytes().length > 0);
+        }
+
+        @Test
+        @DisplayName("Should generate PDF when language is EN")
+        void shouldGeneratePdf_whenLanguageIsEN() throws IOException {
+            // given
+            GeneratePdfRequest request = createValidRequestWithLanguage(Language.EN);
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenReturn(VALID_HTML);
+
+            // when
+            Resource result = pdfGeneratorService.generatePdf(request);
+
+            // then
+            assertNotNull(result);
+            assertTrue(result.getInputStream().readAllBytes().length > 0);
+        }
+
+        @Test
+        @DisplayName("Should validate language strings correctly")
+        void shouldValidateLanguageStringsCorrectly() {
+            // Valid languages
+            assertTrue(LanguageUtil.isValidLanguage("PL"));
+            assertTrue(LanguageUtil.isValidLanguage("EN"));
+
+            // Invalid languages
+            assertFalse(LanguageUtil.isValidLanguage("FR"));
+            assertFalse(LanguageUtil.isValidLanguage(""));
+        }
     }
 
-    @Test
-    void shouldUseDefaultTemplate_whenTemplateNotSet() {
-        // given
-        GeneratePdfRequest request = new GeneratePdfRequest();
-        request.setUserCV(new UserCV());
-        String htmlContent = "<html><body>Test CV</body></html>";
-        byte[] pdfContent = "PDF content".getBytes();
 
-        when(templateEngine.process(eq("simple"), any(Context.class))).thenReturn(htmlContent);
-        when(gotenbergClient.convertHtml(any(MultipartFile.class)))
-                .thenReturn(ResponseEntity.ok(pdfContent));
+    @Nested
+    @DisplayName("Skills Processing")
+    class SkillsProcessing {
 
-        // when
-        Resource result = pdfGeneratorService.generatePdf(request);
+        @Test
+        @DisplayName("Should generate PDF with matched skills")
+        void shouldGeneratePdf_withMatchedSkills() throws IOException {
+            // given
+            GeneratePdfRequest request = createRequestWithMatchedSkills();
+            when(templateEngine.process(eq(VALID_TEMPLATE), any(Context.class)))
+                    .thenReturn(VALID_HTML);
 
-        // then
-        assertNotNull(result);
-        assertEquals("simple", request.getTemplate());
+            // when
+            Resource result = pdfGeneratorService.generatePdf(request);
+
+            // then
+            assertNotNull(result);
+            assertTrue(result.getInputStream().readAllBytes().length > 0);
+        }
     }
 
-    @Test
-    void shouldThrowException_whenGotenbergClientFails() {
-        // given
-        GeneratePdfRequest request = createSampleRequest();
-        String htmlContent = "<html><body>Test CV</body></html>";
-
-        when(templateEngine.process(eq("simple"), any(Context.class))).thenReturn(htmlContent);
-        when(gotenbergClient.convertHtml(any(MultipartFile.class)))
-                .thenThrow(new RuntimeException("Conversion failed"));
-
-        // when & then
-        Exception exception = assertThrows(RuntimeException.class,
-                () -> pdfGeneratorService.generatePdf(request));
-        assertTrue(exception.getMessage().contains("Error generating PDF"));
+    // Helper methods
+    private GeneratePdfRequest createValidRequest() {
+        return createValidRequestWithLanguage(Language.PL);
     }
 
-    @Test
-    void shouldThrowException_whenUserCVIsNull() {
-        // given
-        GeneratePdfRequest request = new GeneratePdfRequest();
-
-        // when & then
-        Exception exception = assertThrows(RuntimeException.class,
-                () -> pdfGeneratorService.generatePdf(request));
-        assertTrue(exception.getMessage().contains("Error generating PDF"));
+    private GeneratePdfRequest createValidRequestWithLanguage(Language language) {
+        return GeneratePdfRequest.builder()
+                .userCV(createValidUserCV())
+                .jobOffer(createValidJobOffer())
+                .skillResult(createValidSkillResult())
+                .template(VALID_TEMPLATE)
+                .language(language)
+                .build();
     }
 
-    private GeneratePdfRequest createSampleRequest() {
-        UserCV cv = new UserCV();
-        UserCV.PersonalInfo personalInfo = new UserCV.PersonalInfo();
-        personalInfo.setFirstName("John");
-        personalInfo.setLastName("Doe");
-        cv.setPersonalInfo(personalInfo);
+    private GeneratePdfRequest createRequestWithMatchedSkills() {
+        UserCV cv = createValidUserCV();
+        cv.setSkills(List.of("Java", "Spring", "React"));
 
-        GeneratePdfRequest request = new GeneratePdfRequest();
-        request.setUserCV(cv);
-        request.setLanguage(Language.EN);
-        return request;
+        JobOffer jobOffer = createValidJobOffer();
+        jobOffer.setTechnologies(List.of("Java", "Spring", "Angular"));
+
+        return GeneratePdfRequest.builder()
+                .userCV(cv)
+                .jobOffer(jobOffer)
+                .skillResult(createValidSkillResult())
+                .template(VALID_TEMPLATE)
+                .language(Language.PL)
+                .build();
+    }
+
+    private UserCV createValidUserCV() {
+        return UserCV.builder()
+                .personalInfo(UserCV.PersonalInfo.builder()
+                        .firstName("John")
+                        .lastName("Doe")
+                        .email("john@example.com")
+                        .build())
+                .build();
+    }
+
+    private JobOffer createValidJobOffer() {
+        return JobOffer.builder()
+                .url("http://example.com/job")
+                .company("Tech Corp")
+                .title("Software Engineer")
+                .description("Job description")
+                .technologies(new ArrayList<>())
+                .requirements(new ArrayList<>())
+                .responsibilities(new ArrayList<>())
+                .build();
+    }
+
+    private SkillResult createValidSkillResult() {
+        return SkillResult.builder()
+                .hardSkills(new ArrayList<>())
+                .softSkills(new ArrayList<>())
+                .tools(new ArrayList<>())
+                .build();
     }
 }

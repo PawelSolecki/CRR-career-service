@@ -31,4 +31,13 @@ public class LanguageUtil {
                 "MATCHED_SKILLS", MATCHED_SKILLS.get(lang)
         );
     }
+
+    public static boolean isValidLanguage(String language) {
+        try {
+            Language.valueOf(language);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 }
