@@ -1,5 +1,6 @@
-package com.example.careerservice.validation;
+package com.example.careerservice.util;
 
+import com.example.careerservice.validation.TemplateValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
