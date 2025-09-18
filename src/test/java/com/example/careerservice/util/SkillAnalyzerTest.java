@@ -105,14 +105,6 @@ class SkillAnalyzerTest {
         assertTrue(result.contains("Jenkins"));
     }
 
-    private GeneratePdfRequest createRequestWithNullSkillResult() {
-        return GeneratePdfRequest.builder()
-                .userCV(UserCV.builder().build())
-                .jobOffer(JobOffer.builder().build())
-                .skillResult(null)
-                .build();
-    }
-
     private GeneratePdfRequest createRequest(
             List<String> cvSkills,
             List<String> jobSkills,
