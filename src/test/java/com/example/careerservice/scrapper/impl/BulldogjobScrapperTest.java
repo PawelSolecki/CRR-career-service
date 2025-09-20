@@ -1,7 +1,7 @@
 package com.example.careerservice.scrapper.impl;
 
 import com.example.careerservice.scrapper.JobScrapper;
-import com.example.careerservice.scrapper.model.JobOffer;
+import com.example.careerservice.model.JobOffer;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

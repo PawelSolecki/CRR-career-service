@@ -1,7 +1,7 @@
 package com.example.careerservice.service;
 
 import com.example.careerservice.scrapper.JobScrapper;
-import com.example.careerservice.scrapper.model.JobOffer;
+import com.example.careerservice.model.JobOffer;
 import com.example.careerservice.util.UrlValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

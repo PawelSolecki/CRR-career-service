@@ -1,114 +1,102 @@
 package com.example.careerservice.model;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.util.List;
 
-
-
+@Data
+@Builder
 public class UserCV {
-    enum LanguageLevel {
-        BASIC,
-        INTERMEDIATE,
-        ADVANCED,
-        NATIVE,
+    private enum LanguageLevel {
+        A1,
+        A2,
+        B1,
+        B2,
+        C1,
+        C2
     }
 
-    enum Level {
-        JUNIOR,
-        MID,
-        SENIOR,
-        LEAD,
-        PRINCIPAL,
-        INTERN,
-    }
-
-    public PersonalInfo personalInfo;
-    public List<String> technologies;
-    public List<Experience> experience;
-    public List<Education> education;
-    public List<Skill> skills;
-    public List<Language> languages;
-    public List<Certification> certifications;
-    public List<Project> projects;
-    public List<Internship> interships;
-
-    public static class Summary {
-
-        public String text;
-        public List<String> tech;
-    }
-
+    @Valid
+    @NotNull(message = "Personal info is required")
+    private PersonalInfo personalInfo;
+    private List<String> skills;
+    private List<Experience> experience;
+    private List<Education> education;
+    private List<Language> languages;
+    private List<Certification> certifications;
+    private List<Project> projects;
+    @Data
+    @Builder
     public static class PersonalInfo {
-
-        public String firstName;
-        public String lastName;
-        public String email;
-        public String phone;
-        public String summary;
-        public String linkedIn;
-        public String github;
-        public String website;
-        public String other;
+        @NotBlank(message = "First name is required")
+        private String firstName;
+        @NotBlank(message = "Last name is required")
+        private String lastName;
+        @Email(message = "Email should be valid")
+        private String email;
+        private String phone;
+        private String role;
+        private String summary;
+        private String linkedIn;
+        private String github;
+        private String website;
+        private String other;
     }
 
+    @Data
+    @Builder
     public static class Experience {
-
-        public String position;
-        public String company;
-        public String url;
-        public String location;
-        public LocalDate startDate;
-        public LocalDate endDate;
-        public Summary summary;
+        private String position;
+        private String company;
+        private String url;
+        private String location;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private List<Summary> summaries;
     }
 
+    @Data
+    @Builder
     public static class Education {
-
-        public String school;
-        public String degree;
-        public String fieldOfStudy;
-        public LocalDate startDate;
-        public LocalDate endDate;
+        private String school;
+        private String degree;
+        private String fieldOfStudy;
+        private LocalDate startDate;
+        private LocalDate endDate;
     }
-
-    public static class Skill {
-
-        public String name;
-        public Level level;
-        public Double yearsOfExperience;
-        public List<String> keywords;
-    }
-
+    @Data
+    @Builder
     public static class Language {
-
-        public String language;
-        public LanguageLevel level;
+        private String language;
+        private LanguageLevel level;
     }
 
+    @Data
+    @Builder
     public static class Certification {
-
-        public String name;
-        public String issuer;
-        public LocalDate date;
+        private String name;
+        private String issuer;
+        private LocalDate date;
     }
 
+    @Data
+    @Builder
     public static class Project {
-
-        public String name;
-        public String description;
-        public String url;
-        public List<String> technologies;
-        public Summary summary;
+        private String name;
+        private String url;
+        private List<Summary> summaries;
     }
 
-    public static class Internship {
-
-        public String position;
-        public String company;
-        public String url;
-        public String location;
-        public LocalDate startDate;
-        public LocalDate endDate;
-        public Summary summary;
+    @Data
+    @Builder
+    public static class Summary {
+        private String text;
+        private List<String> technologies;
     }
 }
