@@ -1,0 +1,9 @@
+openapi: 3.0.3
+info:
+  title: My API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+paths:
+  /scrapper:
+    $ref: "paths/scrapper/scrape.yaml#/scrape"

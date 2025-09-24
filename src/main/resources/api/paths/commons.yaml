@@ -1,0 +1,33 @@
+components:
+  parameters:
+    UrlParam:
+      name: url
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uri
+      description: URL of the job offer page
+
+  responses:
+    BadRequest:
+      description: Bad request – invalid parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid URL"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Job offer not found"

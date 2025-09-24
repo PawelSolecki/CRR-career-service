@@ -1,0 +1,55 @@
+scrape:
+  get:
+    summary: Scrape job offer
+    description: Scrapes job offer data from the given URL.
+    parameters:
+      - $ref: "../commons.yaml#/components/parameters/UrlParam"
+    responses:
+      "200":
+        description: Job offer successfully scraped
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobOffer"
+      "400":
+        $ref: "../commons.yaml#/components/responses/BadRequest"
+      "404":
+        $ref: "../commons.yaml#/components/responses/NotFound"
+
+components:
+  schemas:
+    JobOffer:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          example: "https://example.com/job/java-developer"
+        company:
+          type: string
+          example: "ACME Corp"
+        title:
+          type: string
+          example: "Java Developer"
+        description:
+          type: string
+          example: "Exciting opportunity for a Java developer..."
+        technologies:
+          type: array
+          items:
+            type: string
+          example: ["Java", "Spring Boot", "PostgreSQL"]
+        requirements:
+          type: array
+          items:
+            type: string
+          example: ["5+ years of Java experience", "Teamwork skills"]
+        responsibilities:
+          type: array
+          items:
+            type: string
+          example: ["Develop backend services", "Maintain code quality"]
+      required:
+        - url
+        - company
+        - title
