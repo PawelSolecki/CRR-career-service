@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -89,6 +90,27 @@ public class GlobalExceptionHandler {
             )
         );
     }
+
+//    @ExceptionHandler(ServletRequestBindingException.class)
+//    public ResponseEntity<ErrorResponse> handleServletRequestBinding(ServletRequestBindingException ex) {
+//        HttpStatus status = HttpStatus.BAD_REQUEST;
+//        return ResponseEntity.status(status).body(
+//            ErrorResponse.of(
+//                status,
+//                "Invalid or missing request data",
+//                ex.getMessage()
+//            )
+//        );
+//    }
+
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+//        log.error("Illegal argument: {}", ex.getMessage());
+//        HttpStatus status = HttpStatus.BAD_REQUEST;
+//        return ResponseEntity.status(status).body(
+//            ErrorResponse.of(status, "Invalid argument", ex.getMessage())
+//        );
+//    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {

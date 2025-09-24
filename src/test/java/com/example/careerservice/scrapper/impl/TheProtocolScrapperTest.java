@@ -18,7 +18,7 @@ class TheProtocolScrapperTest {
 
     @Nested
     class ScrapeIntegrationTests {
-        private final static String OFFER = "https://theprotocol.it/szczegoly/praca/programista-java-warszawa,oferta,dbe30000-d4f2-5aeb-0e2e-08ddd4f20754?s=-4682230642&searchId=0dfd1446-6dd0-4866-88e3-4f1a1c59504e";
+        private final static String OFFER = "https://theprotocol.it/szczegoly/praca/gitlab-administrator-devops-warszawa,oferta,c9b20000-1c44-4a04-fc4a-08ddfb6986e3";
 
         @Test
         @Tag("integration")
