@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.openapi.generator' version '6.6.0'
 }
 
 group = 'com.example'
@@ -37,7 +38,21 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.mockito:mockito-core:5.14.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.14.2'
+
+
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 }
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/api/openapi.yaml".toString()
+    apiPackage = "io.forty_hours.api"
+    modelPackage = "io.forty_hours.api.model"
+    modelNameSuffix = "Dto"
+
+}
+
+compileJava.dependsOn openApiGenerate
 
 tasks.named('test') {
     useJUnitPlatform()
