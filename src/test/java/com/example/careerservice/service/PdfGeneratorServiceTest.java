@@ -2,6 +2,7 @@ package com.example.careerservice.service;
 
 import com.example.careerservice.exception.TemplateNotFoundException;
 import com.example.careerservice.model.*;
+import com.example.careerservice.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,8 @@ class PdfGeneratorServiceTest {
     private static final String VALID_HTML = "<html><body>Test CV</body></html>";
     private static final String TEMPLATE_NAME = "simple";
 
+    private final TestDataFactory testDataFactory = new TestDataFactory();
+
     @BeforeEach
     void setUp() {
         pdfGeneratorService = new PdfGeneratorService(templateEngine);
@@ -37,7 +40,7 @@ class PdfGeneratorServiceTest {
     @Test
     void shouldGeneratePdf_whenRequestIsValid() {
         // given
-        GeneratePdfRequest request = createValidRequest();
+        GeneratePdfRequest request = testDataFactory.createValidRequest();
         when(templateEngine.process(eq(TEMPLATE_NAME), any(Context.class)))
                 .thenReturn(VALID_HTML);
 
@@ -53,7 +56,7 @@ class PdfGeneratorServiceTest {
     @Test
     void shouldThrowTemplateNotFoundException_whenTemplateNotFound() {
         // given
-        GeneratePdfRequest request = createValidRequest();
+        GeneratePdfRequest request = testDataFactory.createValidRequest();
         when(templateEngine.process(eq(TEMPLATE_NAME), any(Context.class)))
                 .thenThrow(new TemplateNotFoundException("Template not found"));
 
@@ -65,7 +68,7 @@ class PdfGeneratorServiceTest {
     @Test
     void shouldIncludeMatchedSkills_whenSkillsMatch() {
         // given
-        GeneratePdfRequest request = createRequestWithMatchingSkills();
+        GeneratePdfRequest request = testDataFactory.createRequestWithMatchingSkills();
         when(templateEngine.process(eq(TEMPLATE_NAME), any(Context.class)))
                 .thenReturn(VALID_HTML);
 
@@ -84,64 +87,26 @@ class PdfGeneratorServiceTest {
         assertTrue(matchedSkills.contains("Spring"));
     }
 
+    @Test
+    void shouldThrowException_whenGeneratedPdfIsNull() {
+        // given
+        GeneratePdfRequest request = testDataFactory.createValidRequest();
+        when(templateEngine.process(eq(TEMPLATE_NAME), any(Context.class)))
+                .thenReturn(null);
 
-    private GeneratePdfRequest createValidRequest() {
-        return GeneratePdfRequest.builder()
-                .userCV(createBasicUserCV())
-                .jobOffer(createBasicJobOffer())
-                .skillResult(createBasicSkillResult())
-                .template(TEMPLATE_NAME)
-                .language(Language.PL)
-                .build();
+        // when & then
+        assertThrows(IllegalStateException.class,
+                () -> pdfGeneratorService.generatePdf(request));
     }
+    @Test
+    void shouldThrowException_whenHtmlIsEmpty() {
+        // given
+        GeneratePdfRequest request = testDataFactory.createValidRequest();
+        when(templateEngine.process(eq(TEMPLATE_NAME), any(Context.class)))
+                .thenReturn("");
 
-    private GeneratePdfRequest createRequestWithMatchingSkills() {
-        List<String> skills = List.of("Java", "Spring", "React");
-        List<SkillItem> hardSkills = List.of(
-                SkillItem.builder().name("Java").score(0.9).build(),
-                SkillItem.builder().name("Spring").score(0.8).build()
-        );
-
-        UserCV cv = createBasicUserCV();
-        cv.setSkills(skills);
-
-        JobOffer jobOffer = createBasicJobOffer();
-        jobOffer.setTechnologies(skills);
-
-        SkillResult skillResult = createBasicSkillResult();
-        skillResult.setHardSkills(hardSkills);
-
-        return GeneratePdfRequest.builder()
-                .userCV(cv)
-                .jobOffer(jobOffer)
-                .skillResult(skillResult)
-                .template(TEMPLATE_NAME)
-                .language(Language.PL)
-                .build();
-    }
-
-    private UserCV createBasicUserCV() {
-        return UserCV.builder()
-                .personalInfo(UserCV.PersonalInfo.builder()
-                        .firstName("John")
-                        .lastName("Doe")
-                        .email("john@example.com")
-                        .build())
-                .build();
-    }
-
-    private JobOffer createBasicJobOffer() {
-        return JobOffer.builder()
-                .title("Software Engineer")
-                .company("Tech Corp")
-                .build();
-    }
-
-    private SkillResult createBasicSkillResult() {
-        return SkillResult.builder()
-                .hardSkills(new ArrayList<>())
-                .softSkills(new ArrayList<>())
-                .tools(new ArrayList<>())
-                .build();
+        // when & then
+        assertThrows(IllegalStateException.class,
+                () -> pdfGeneratorService.generatePdf(request));
     }
 }

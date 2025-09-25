@@ -1,4 +1,10 @@
 spring:
+  mvc:
+    problemdetails:
+      enabled: true
+  web:
+    resources:
+      add-mappings: false
   application:
     name: career-service
 server:

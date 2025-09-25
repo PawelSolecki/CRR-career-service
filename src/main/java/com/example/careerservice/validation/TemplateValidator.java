@@ -13,14 +13,18 @@ public class TemplateValidator implements ConstraintValidator<ValidTemplate, Str
     private final SpringResourceTemplateResolver templateResolver;
     private final ResourceLoader resourceLoader;
 
+    @Override
+    public void initialize(ValidTemplate constraintAnnotation) {
+        templateResolver.setPrefix("classpath:/templates/");
+        templateResolver.setSuffix(".html");
+    }
+
 
     @Override
     public boolean isValid(String templateName, ConstraintValidatorContext context) {
         if (templateName == null || templateName.isBlank()) {
             return false;
         }
-        templateResolver.setPrefix("classpath:/templates/");
-        templateResolver.setSuffix(".html");
 
         try {
             String templateLocation = templateResolver.getPrefix() + templateName + templateResolver.getSuffix();
