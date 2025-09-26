@@ -42,7 +42,13 @@ class BulldogjobScrapperTest {
         @Test
         @Tag("integration")
         void shouldThrowRuntimeExceptionForNonexistentPage() {
-            assertThrows(RuntimeException.class, () -> scrapper.scrape("https://www.pracuj.pl/praca/nonexistent-page,oferta,0000000"));
+            assertThrows(RuntimeException.class, () -> scrapper.scrape("https://bulldogjob.pl/praca/nonexistent-page,oferta,0000000"));
+        }
+
+        @Test
+        @Tag("integration")
+        void shouldThrowOfferNotFoundForExpiredOffer() {
+            assertThrows(com.example.careerservice.exception.OfferNotFound.class, () -> scrapper.scrape("https://bulldogjob.pl/"));
         }
     }
 }
