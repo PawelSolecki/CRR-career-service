@@ -1,0 +1,27 @@
+components:
+  schemas:
+    GeneratePdfRequest:
+      type: object
+      properties:
+        template:
+          type: string
+          enum: [simple, detailed]
+          example: "simple"
+          description: Template name to use for PDF generation
+        language:
+          type: string
+          enum: [PL, EN]
+          example: "EN"
+          description: Language of the generated CV
+        userCV:
+          $ref: "UserCV.yaml#/components/schemas/UserCV"
+        jobOffer:
+          $ref: "JobOffer.yaml#/components/schemas/JobOffer"
+        skillResult:
+          $ref: "SkillResult.yaml#/components/schemas/SkillResult"
+      required:
+        - template
+        - language
+        - userCV
+        - jobOffer
+        - skillResult

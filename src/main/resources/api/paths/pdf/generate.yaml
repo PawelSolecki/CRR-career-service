@@ -1,0 +1,27 @@
+generate:
+  post:
+    summary: Generate PDF CV
+    description: Generates a PDF CV from the provided data
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/GeneratePdfRequest.yaml#/components/schemas/GeneratePdfRequest"
+    responses:
+      "200": #it won't be showed in Response sample in Swagger UI because it's binary
+        description: |
+          PDF successfully generated.
+          Returns a binary PDF file that can be downloaded and viewed in a PDF reader.
+          The file name will be in format: `cv_{firstName}_{lastName}.pdf`
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+      "400":
+        $ref: "../commons.yaml#/components/responses/BadRequest"
+      "404":
+        $ref: "../commons.yaml#/components/responses/NotFound"
+      "500":
+        $ref: "../commons.yaml#/components/responses/InternalServerError"

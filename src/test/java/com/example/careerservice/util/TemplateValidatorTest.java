@@ -6,20 +6,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 class TemplateValidatorTest {
+    private static final String TEMPLATE_PREFIX = "classpath:/templates/";
+    private static final String TEMPLATE_SUFFIX = ".html";
+    private static final String TEMPLATE_NAME = "simple";
 
     @Mock
-    private SpringTemplateEngine templateEngine;
+    private ResourceLoader resourceLoader;
+    @Mock
+    private Resource resource;
+    @Mock
+    private SpringResourceTemplateResolver templateResolver;
 
     @InjectMocks
     private TemplateValidator validator;
@@ -38,20 +45,24 @@ class TemplateValidatorTest {
     @Test
     void shouldReturnTrue_whenTemplateExists() {
         // given
-        when(templateEngine.process(eq("simple"), any(Context.class)))
-                .thenReturn("<html>template content</html>");
+        when(templateResolver.getPrefix()).thenReturn(TEMPLATE_PREFIX);
+        when(templateResolver.getSuffix()).thenReturn(TEMPLATE_SUFFIX);
+        when(resourceLoader.getResource(TEMPLATE_PREFIX + TEMPLATE_NAME + TEMPLATE_SUFFIX)).thenReturn(resource);
+        when(resource.exists()).thenReturn(true);
 
         // when & then
-        assertTrue(validator.isValid("simple", null));
+        assertTrue(validator.isValid(TEMPLATE_NAME, null));
     }
 
     @Test
     void shouldReturnFalse_whenTemplateProcessingFails() {
         // given
-        when(templateEngine.process(eq("simple"), any(Context.class)))
-                .thenThrow(new RuntimeException("Template not found"));
+        when(templateResolver.getPrefix()).thenReturn(TEMPLATE_PREFIX);
+        when(templateResolver.getSuffix()).thenReturn(TEMPLATE_SUFFIX);
+        when(resourceLoader.getResource(TEMPLATE_PREFIX + TEMPLATE_NAME + TEMPLATE_SUFFIX)).thenReturn(resource);
+        when(resource.exists()).thenReturn(false);
 
         // when & then
-        assertFalse(validator.isValid("simple", null));
+        assertFalse(validator.isValid(TEMPLATE_NAME, null));
     }
 }

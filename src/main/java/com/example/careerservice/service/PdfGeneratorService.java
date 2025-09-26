@@ -31,11 +31,26 @@ public class PdfGeneratorService {
         context.setVariable("translations", getTranslations(request.getLanguage()));
         context.setVariable("matchedSkills", SkillAnalyzer.getMatchedSkillNames(request));
 
-        String html = templateEngine.process(request.getTemplate(), context);
+        String html = templateEngine.process(String.valueOf(request.getTemplate()), context);
+
+        if (html == null || html.isBlank()) {
+            throw new IllegalStateException("Generated HTML is empty");
+        }
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             HtmlConverter.convertToPdf(html, outputStream);
-            return new ByteArrayResource(outputStream.toByteArray());
+            byte[] pdfContent = outputStream.toByteArray();
+
+            if (pdfContent.length == 0) {
+                throw new IllegalStateException("Generated PDF is empty");
+            }
+
+            Resource resource = new ByteArrayResource(pdfContent);
+            if (!resource.exists()) {
+                throw new IllegalStateException("Generated PDF resource is invalid");
+            }
+
+            return resource;
         } catch (Exception e) {
             log.error("Error generating PDF", e);
             throw new RuntimeException("Error generating PDF", e);

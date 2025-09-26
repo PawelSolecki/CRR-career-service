@@ -1,0 +1,17 @@
+scrape:
+  get:
+    summary: Scrape job offer
+    description: Scrapes job offer data from the given URL.
+    parameters:
+      - $ref: "../commons.yaml#/components/parameters/UrlParam"
+    responses:
+      "200":
+        description: Job offer successfully scraped
+        content:
+          application/json:
+            schema:
+              $ref: "../../schemas/JobOffer.yaml#/components/schemas/JobOffer"
+      "400":
+        $ref: "../commons.yaml#/components/responses/BadRequest"
+      "404":
+        $ref: "../commons.yaml#/components/responses/NotFound"
