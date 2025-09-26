@@ -1,10 +1,10 @@
 package com.example.careerservice.controller;
 
-import com.example.careerservice.model.*;
+import com.example.careerservice.model.GeneratePdfRequest;
+import com.example.careerservice.model.Language;
 import com.example.careerservice.service.PdfGeneratorService;
 import com.example.careerservice.util.TestDataFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,9 +13,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,12 +30,6 @@ class PdfControllerTest {
     private PdfGeneratorService pdfGeneratorService;
 
     private final TestDataFactory testDataFactory = new TestDataFactory();
-
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @Test
     void shouldGeneratePdfSuccessfully() throws Exception {
