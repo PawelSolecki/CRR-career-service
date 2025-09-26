@@ -2,8 +2,6 @@ generate:
   post:
     summary: Generate PDF CV
     description: Generates a PDF CV from the provided data
-    tags:
-      - PDF Generation
     requestBody:
       required: true
       content:
@@ -11,8 +9,11 @@ generate:
           schema:
             $ref: "../../schemas/GeneratePdfRequest.yaml#/components/schemas/GeneratePdfRequest"
     responses:
-      "200":
-        description: PDF successfully generated
+      "200": #it won't be showed in Response sample in Swagger UI because it's binary
+        description: |
+          PDF successfully generated.
+          Returns a binary PDF file that can be downloaded and viewed in a PDF reader.
+          The file name will be in format: `cv_{firstName}_{lastName}.pdf`
         content:
           application/pdf:
             schema:

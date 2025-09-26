@@ -9,60 +9,13 @@ components:
         format: uri
       description: URL of the job offer page
 
-  schemas:
-    Error:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-          example: "2024-01-15T10:30:00Z"
-        status:
-          type: integer
-          format: int32
-          example: 400
-        error:
-          type: string
-          example: "Bad Request"
-        message:
-          type: string
-          example: "Validation failed"
-        details:
-          type: array
-          items:
-            type: string
-        example: ["firstName: must not be blank", "email: must be valid"]
-
-#  responses:
-#    BadRequest:
-#      description: Bad request – invalid parameters
-#      content:
-#        application/json:
-#          schema:
-#            type: object
-#            properties:
-#              error:
-#                type: string
-#                example: "Invalid URL"
-#
-#    NotFound:
-#      description: Resource not found
-#      content:
-#        application/json:
-#          schema:
-#            type: object
-#            properties:
-#              error:
-#                type: string
-#                example: "Job offer not found"
-#    InternalServerError:
   responses:
     BadRequest:
       description: Bad Request - Invalid input parameters
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Error"
+            $ref: "../schemas/ErrorResponse.yaml#/components/schemas/ErrorResponse"
           examples:
             validation:
               value:
@@ -84,7 +37,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Error"
+            $ref: "../schemas/ErrorResponse.yaml#/components/schemas/ErrorResponse"
           examples:
             template:
               value:
@@ -106,7 +59,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Error"
+            $ref: "../schemas/ErrorResponse.yaml#/components/schemas/ErrorResponse"
           examples:
             default:
               value:
