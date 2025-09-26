@@ -1,7 +1,8 @@
 package com.example.careerservice.scrapper.impl;
 
-import com.example.careerservice.scrapper.JobScrapper;
+import com.example.careerservice.exception.OfferNotFound;
 import com.example.careerservice.model.JobOffer;
+import com.example.careerservice.scrapper.JobScrapper;
 import com.example.careerservice.util.UrlValidator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,12 +30,15 @@ public class TheProtocolScrapper implements JobScrapper {
             return jobOffer;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            throw new OfferNotFound(url);
         }
     }
 
     private JobOffer parseDocument(Document doc) {
-        String company = doc.select("a[data-test=anchor-company-link]").first().ownText();
         String title = doc.select("h1[data-test=text-offerTitle]").first().text();
+
+        String company = doc.select("a[data-test=anchor-company-link]").first().ownText();
         String description = doc.select("div[data-test=PROJECT] div[data-test=text-sectionItem]").text();
 
         List<String> technologies = doc.select(

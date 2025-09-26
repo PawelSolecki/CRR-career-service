@@ -1,5 +1,6 @@
 package com.example.careerservice.scrapper.impl;
 
+import com.example.careerservice.exception.OfferNotFound;
 import com.example.careerservice.scrapper.JobScrapper;
 import com.example.careerservice.model.JobOffer;
 import com.example.careerservice.util.UrlValidator;
@@ -25,12 +26,17 @@ public class PracujScrapper implements JobScrapper {
             return jobOffer;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            throw new OfferNotFound(url);
         }
     }
 
     private JobOffer parseDocument(Document doc) {
-        String company = doc.select("h2[data-test=text-employerName]").first().ownText();
         String title = doc.select("h1[data-test=text-positionName]").text();
+        if(title.isEmpty()) {
+            return null;
+        }
+        String company = doc.select("h2[data-test=text-employerName]").first().ownText();
         String description = doc.select("ul[data-test=text-about-project]").text();
 
         List<String> technologies = doc.select(

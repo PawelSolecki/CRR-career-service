@@ -1,5 +1,6 @@
 package com.example.careerservice.service;
 
+import com.example.careerservice.exception.UnsupportedSourceException;
 import com.example.careerservice.scrapper.JobScrapper;
 import com.example.careerservice.model.JobOffer;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,7 +90,7 @@ class ScrapperServiceTest {
 
         // when + then
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(UnsupportedSourceException.class,
             () -> scrapperService.scrape(url));
         verify(pracujScrapper, never()).scrape(anyString());
         verify(protocolScrapper, never()).scrape(anyString());
