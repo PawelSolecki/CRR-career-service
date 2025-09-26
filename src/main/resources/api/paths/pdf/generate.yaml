@@ -1,0 +1,26 @@
+generate:
+  post:
+    summary: Generate PDF CV
+    description: Generates a PDF CV from the provided data
+    tags:
+      - PDF Generation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/GeneratePdfRequest.yaml#/components/schemas/GeneratePdfRequest"
+    responses:
+      "200":
+        description: PDF successfully generated
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+      "400":
+        $ref: "../commons.yaml#/components/responses/BadRequest"
+      "404":
+        $ref: "../commons.yaml#/components/responses/NotFound"
+      "500":
+        $ref: "../commons.yaml#/components/responses/InternalServerError"

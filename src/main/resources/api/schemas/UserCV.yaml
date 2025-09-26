@@ -1,0 +1,170 @@
+components:
+  schemas:
+    UserCV:
+      type: object
+      properties:
+        personalInfo:
+          $ref: "#/components/schemas/PersonalInfo"
+        skills:
+          type: array
+          items:
+            type: string
+          example: ["Java", "Spring Boot", "Docker"]
+        experience:
+          type: array
+          items:
+            $ref: "#/components/schemas/Experience"
+        education:
+          type: array
+          items:
+            $ref: "#/components/schemas/Education"
+        languages:
+          type: array
+          items:
+            $ref: "#/components/schemas/Language"
+        certifications:
+          type: array
+          items:
+            $ref: "#/components/schemas/Certification"
+        projects:
+          type: array
+          items:
+            $ref: "#/components/schemas/Project"
+      required:
+        - personalInfo
+
+    PersonalInfo:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "John"
+          description: First name of the CV owner
+        lastName:
+          type: string
+          example: "Doe"
+          description: Last name of the CV owner
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+          description: Contact email address
+        phoneNumber:
+          type: string
+          example: "+48 123 456 789"
+          description: Contact phone number
+        location:
+          type: string
+          example: "Warsaw, Poland"
+          description: Current location
+        github:
+          type: string
+          example: "https://github.com/johndoe"
+          description: GitHub profile URL
+        linkedin:
+          type: string
+          example: "https://linkedin.com/in/johndoe"
+          description: LinkedIn profile URL
+      required:
+        - firstName
+        - lastName
+
+    Experience:
+      type: object
+      properties:
+        position:
+          type: string
+          example: "Senior Java Developer"
+        company:
+          type: string
+          example: "Tech Corp"
+        url:
+          type: string
+          example: "https://techcorp.com"
+        location:
+          type: string
+          example: "Warsaw, Poland"
+        startDate:
+          type: string
+          format: date
+          example: "2020-01-01"
+        endDate:
+          type: string
+          format: date
+          example: "2023-12-31"
+        summaries:
+          type: array
+          items:
+            $ref: "#/components/schemas/Summary"
+
+    Education:
+      type: object
+      properties:
+        school:
+          type: string
+          example: "Technical University"
+        degree:
+          type: string
+          example: "Master's Degree"
+        fieldOfStudy:
+          type: string
+          example: "Computer Science"
+        startDate:
+          type: string
+          format: date
+          example: "2015-10-01"
+        endDate:
+          type: string
+          format: date
+          example: "2020-06-30"
+
+    Language:
+      type: object
+      properties:
+        language:
+          type: string
+          example: "English"
+        level:
+          type: string
+          enum: [A1, A2, B1, B2, C1, C2]
+          example: "C1"
+
+    Certification:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "AWS Certified Developer"
+        issuer:
+          type: string
+          example: "Amazon Web Services"
+        date:
+          type: string
+          format: date
+          example: "2023-01-15"
+
+    Project:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "E-commerce Platform"
+        url:
+          type: string
+          example: "https://github.com/user/project"
+        summaries:
+          type: array
+          items:
+            $ref: "#/components/schemas/Summary"
+
+    Summary:
+      type: object
+      properties:
+        text:
+          type: string
+          example: "Implemented microservices architecture"
+        technologies:
+          type: array
+          items:
+            type: string
+          example: ["Spring Boot", "Kafka", "PostgreSQL"]

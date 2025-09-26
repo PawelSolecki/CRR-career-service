@@ -7,3 +7,5 @@ servers:
 paths:
   /scrapper:
     $ref: "paths/scrapper/scrape.yaml#/scrape"
+  /api/v1/pdf/generate:
+     $ref: "paths/pdf/generate.yaml#/generate"
