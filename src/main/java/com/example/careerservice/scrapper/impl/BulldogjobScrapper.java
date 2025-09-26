@@ -1,8 +1,10 @@
 package com.example.careerservice.scrapper.impl;
 
+import com.example.careerservice.exception.OfferNotFound;
 import com.example.careerservice.scrapper.JobScrapper;
 import com.example.careerservice.model.JobOffer;
 import com.example.careerservice.util.UrlValidator;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -23,6 +25,8 @@ public class BulldogjobScrapper implements JobScrapper {
             JobOffer jobOffer = parseDocument(doc);
             jobOffer.setUrl(url);
             return jobOffer;
+        } catch (HttpStatusException e) {
+            throw new OfferNotFound(url);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

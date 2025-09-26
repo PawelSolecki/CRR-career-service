@@ -1,5 +1,7 @@
 package com.example.careerservice.controller;
 
+import com.example.careerservice.exception.OfferNotFound;
+import com.example.careerservice.exception.UnsupportedSourceException;
 import com.example.careerservice.model.JobOffer;
 import com.example.careerservice.service.ScrapperService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,9 +53,10 @@ class ScrapperControllerTest {
     }
 
     @Test
-    void should() throws Exception {
+    void shouldReturnBadRequest_whenInvalidUrl() throws Exception {
         Mockito.when(scrapperService.scrape("invalid-url"))
-            .thenThrow(new IllegalArgumentException("No scrapper found for url: invalid-url"));
+            .thenThrow(new UnsupportedSourceException("invalid-url",
+                java.util.List.of("http://example.com", "http://another.com")));
 
         mockMvc.perform(get("/api/v1/scrapper")
                 .param("url", "invalid-url"))
@@ -87,13 +90,12 @@ class ScrapperControllerTest {
 
     @Test
     void shouldReturnOfferException() throws Exception {
-        Mockito.when(scrapperService.scrape("http://example.com/exception"));
-//            .thenThrow(new RuntimeException("Scraping error")); // <- create custom exception
+        Mockito.when(scrapperService.scrape("http://example.com/exception"))
+            .thenThrow(new OfferNotFound("invalid-url")); // <- create custom exception
 
 
         mockMvc.perform(get("/api/v1/scrapper")
                 .param("url", "http://example.com/exception"))
-            .andExpect(status().is(1000));
-//            .andExpect(status().is5xxServerError()); //<- change when custom exception is created
+            .andExpect(status().isNotFound());
     }
 }
