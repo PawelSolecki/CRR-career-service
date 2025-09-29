@@ -1,5 +1,7 @@
 scrape:
   get:
+    tags:
+      - Scrapper
     summary: Scrape job offer
     description: Scrapes job offer data from the given URL.
     parameters:

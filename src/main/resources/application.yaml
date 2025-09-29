@@ -2,13 +2,16 @@ spring:
   mvc:
     problemdetails:
       enabled: true
-  web:
-    resources:
-      add-mappings: false
   application:
     name: career-service
+
 server:
   port: 8081
+
+springdoc:
+  swagger-ui:
+    url: "/api/openapi.yaml"
+
 logging:
   level:
     root: INFO

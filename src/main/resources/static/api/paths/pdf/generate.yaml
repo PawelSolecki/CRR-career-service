@@ -1,5 +1,7 @@
 generate:
   post:
+    tags:
+      - PDF
     summary: Generate PDF CV
     description: Generates a PDF CV from the provided data
     requestBody:
