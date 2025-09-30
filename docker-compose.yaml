@@ -3,6 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: career-service
+    container_name: CRR-career-service
     ports:
       - "8081:8081"
+    networks:
+      - CRR_network
+
+networks:
+  CRR_network:
+    driver: bridge
+    external: true
