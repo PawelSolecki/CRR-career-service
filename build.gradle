@@ -38,8 +38,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.mockito:mockito-core:5.14.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.14.2'
-
-    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 }
 
 tasks.named('test') {

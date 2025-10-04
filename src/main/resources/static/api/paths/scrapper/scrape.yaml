@@ -1,19 +1,18 @@
-scrape:
-  get:
-    tags:
-      - Scrapper
-    summary: Scrape job offer
-    description: Scrapes job offer data from the given URL.
-    parameters:
-      - $ref: "../commons.yaml#/components/parameters/UrlParam"
-    responses:
-      "200":
-        description: Job offer successfully scraped
-        content:
-          application/json:
-            schema:
-              $ref: "../../schemas/JobOffer.yaml#/components/schemas/JobOffer"
-      "400":
-        $ref: "../commons.yaml#/components/responses/BadRequest"
-      "404":
-        $ref: "../commons.yaml#/components/responses/NotFound"
+get:
+  tags:
+    - Scrapper
+  summary: Scrape job offer
+  description: Scrapes job offer data from the given URL.
+  parameters:
+    - $ref: "/api/paths/commons.yaml#/components/parameters/UrlParam"
+  responses:
+    "200":
+      description: Job offer successfully scraped
+      content:
+        application/json:
+          schema:
+            $ref: "/api/schemas/JobOffer.yaml#/components/schemas/JobOffer"
+    "400":
+      $ref: "/api/paths/commons.yaml#/components/responses/BadRequest"
+    "404":
+      $ref: "/api/paths/commons.yaml#/components/responses/NotFound"

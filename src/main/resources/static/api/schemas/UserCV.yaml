@@ -5,11 +5,12 @@ components:
       properties:
         personalInfo:
           $ref: "#/components/schemas/PersonalInfo"
+          description: Personal information of the CV owner
         skills:
           type: array
           items:
             type: string
-          example: ["Java", "Spring Boot", "Docker"]
+          example: ["React.js", "Next.js", "TypeScript"]
         experience:
           type: array
           items:
@@ -49,22 +50,34 @@ components:
           format: email
           example: "john.doe@example.com"
           description: Contact email address
-        phoneNumber:
+        phone:
           type: string
           example: "+48 123 456 789"
           description: Contact phone number
-        location:
+        role:
           type: string
-          example: "Warsaw, Poland"
-          description: Current location
+          example: "Senior React Developer"
+          description: Current or desired role
+        summary:
+          type: string
+          example: "Experienced React developer with expertise in Next.js and TypeScript"
+          description: Brief professional summary
+        linkedIn:
+          type: string
+          example: "https://linkedin.com/in/johndoe"
+          description: LinkedIn profile URL
         github:
           type: string
           example: "https://github.com/johndoe"
           description: GitHub profile URL
-        linkedin:
+        website:
           type: string
-          example: "https://linkedin.com/in/johndoe"
-          description: LinkedIn profile URL
+          example: "https://johndoe.dev"
+          description: Personal website URL
+        other:
+          type: string
+          example: "Available for immediate start"
+          description: Additional information
       required:
         - firstName
         - lastName
@@ -74,7 +87,7 @@ components:
       properties:
         position:
           type: string
-          example: "Senior Java Developer"
+          example: "Senior React Developer"
         company:
           type: string
           example: "Tech Corp"
@@ -134,10 +147,10 @@ components:
       properties:
         name:
           type: string
-          example: "AWS Certified Developer"
+          example: "Microsoft Azure Developer Associate"
         issuer:
           type: string
-          example: "Amazon Web Services"
+          example: "Microsoft"
         date:
           type: string
           format: date
@@ -148,7 +161,7 @@ components:
       properties:
         name:
           type: string
-          example: "E-commerce Platform"
+          example: "Enterprise Portal"
         url:
           type: string
           example: "https://github.com/user/project"
@@ -162,9 +175,9 @@ components:
       properties:
         text:
           type: string
-          example: "Implemented microservices architecture"
+          example: "Developed a modern SharePoint portal using Next.js"
         technologies:
           type: array
           items:
             type: string
-          example: ["Spring Boot", "Kafka", "PostgreSQL"]
+          example: ["Next.js", "TypeScript", "SharePoint"]
