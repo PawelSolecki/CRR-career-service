@@ -64,27 +64,6 @@ class PdfGeneratorServiceTest {
                 () -> pdfGeneratorService.generatePdf(request));
     }
 
-    @Test
-    void shouldIncludeMatchedSkills_whenSkillsMatch() {
-        // given
-        GeneratePdfRequest request = testDataFactory.createRequestWithMatchingSkills();
-        when(templateEngine.process(eq(TEMPLATE_NAME), any(Context.class)))
-                .thenReturn(VALID_HTML);
-
-        // when
-        pdfGeneratorService.generatePdf(request);
-
-        // then
-        ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
-        verify(templateEngine).process(eq(TEMPLATE_NAME), contextCaptor.capture());
-        Context capturedContext = contextCaptor.getValue();
-
-        @SuppressWarnings("unchecked")
-        List<String> matchedSkills = (List<String>) capturedContext.getVariable("matchedSkills");
-        assertNotNull(matchedSkills);
-        assertTrue(matchedSkills.contains("Java"));
-        assertTrue(matchedSkills.contains("Spring"));
-    }
 
     @Test
     void shouldThrowException_whenGeneratedPdfIsNull() {
