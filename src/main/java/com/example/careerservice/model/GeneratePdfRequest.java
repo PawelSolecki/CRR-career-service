@@ -15,14 +15,6 @@ public class GeneratePdfRequest {
     @NotNull(message = "Personal info is required")
     private  UserCV userCV;
 
-    @Valid
-    @NotNull(message = "Job offer must not be null")
-    private  JobOffer jobOffer;
-
-    @Valid
-    @NotNull(message = "Skill result must not be null")
-    private  SkillResult skillResult;
-
     @NotNull(message = "Template must not be blank")
     @ValidTemplate
     private  String template;

@@ -1,7 +1,7 @@
 package com.example.careerservice.service;
 
 import com.example.careerservice.model.GeneratePdfRequest;
-import com.example.careerservice.util.SkillAnalyzer;
+//import com.example.careerservice.util.SkillAnalyzer;
 import com.itextpdf.html2pdf.HtmlConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +29,8 @@ public class PdfGeneratorService {
         Context context = new Context();
         context.setVariable("cv", request.getUserCV());
         context.setVariable("translations", getTranslations(request.getLanguage()));
-        context.setVariable("matchedSkills", SkillAnalyzer.getMatchedSkillNames(request));
 
-        String html = templateEngine.process(String.valueOf(request.getTemplate()), context);
+        String html = templateEngine.process(request.getTemplate(), context);
 
         if (html == null || html.isBlank()) {
             throw new IllegalStateException("Generated HTML is empty");

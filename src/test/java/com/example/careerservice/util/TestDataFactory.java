@@ -11,8 +11,6 @@ public class TestDataFactory {
     public GeneratePdfRequest createValidRequest() {
         return GeneratePdfRequest.builder()
                 .userCV(createBasicUserCV())
-                .jobOffer(createBasicJobOffer())
-                .skillResult(createBasicSkillResult())
                 .template(TEMPLATE_NAME)
                 .language(Language.PL)
                 .build();
@@ -36,8 +34,6 @@ public class TestDataFactory {
 
         return GeneratePdfRequest.builder()
                 .userCV(cv)
-                .jobOffer(jobOffer)
-                .skillResult(skillResult)
                 .template(TEMPLATE_NAME)
                 .language(Language.PL)
                 .build();
