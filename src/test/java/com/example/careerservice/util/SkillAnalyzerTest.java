@@ -29,7 +29,7 @@ class SkillAnalyzerTest {
                 .build();
 
         // when
-        List<String> result = SkillAnalyzer.getMatchedSkillNames(request);
+        List<String> result = SkillUtil.getMatchedSkillNames(request);
 
         // then
         assertTrue(result.isEmpty());
@@ -49,7 +49,7 @@ class SkillAnalyzerTest {
         GeneratePdfRequest request = createRequest(cvSkills, jobSkills, hardSkills);
 
         // when
-        List<String> result = SkillAnalyzer.getMatchedSkillNames(request);
+        List<String> result = SkillUtil.getMatchedSkillNames(request);
 
         // then
         assertEquals(2, result.size());
@@ -70,7 +70,7 @@ class SkillAnalyzerTest {
         GeneratePdfRequest request = createRequest(cvSkills, jobSkills, hardSkills);
 
         // when
-        List<String> result = SkillAnalyzer.getMatchedSkillNames(request);
+        List<String> result = SkillUtil.getMatchedSkillNames(request);
 
         // then
         assertEquals(2, result.size());
@@ -96,7 +96,7 @@ class SkillAnalyzerTest {
                 cvSkills, jobSkills, hardSkills, softSkills, tools);
 
         // when
-        List<String> result = SkillAnalyzer.getMatchedSkillNames(request);
+        List<String> result = SkillUtil.getMatchedSkillNames(request);
 
         // then
         assertEquals(3, result.size());
