@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/pdf")
 @RequiredArgsConstructor
-public class PdfController {
+public class PdfController implements IPdfController{
 
     private final PdfGeneratorService pdfGeneratorService;
 

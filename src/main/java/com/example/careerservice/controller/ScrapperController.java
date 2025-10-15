@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/scrapper")
 @RequiredArgsConstructor
-public class ScrapperController {
+public class ScrapperController implements IScrapperController{
 
     private final ScrapperService scrapperService;
 
