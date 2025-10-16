@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/cv")
 @RequiredArgsConstructor
-public class CvController {
+public class CvController  implements ICvController{
 
     private final CvService cvService;
 

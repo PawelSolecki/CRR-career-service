@@ -9,8 +9,8 @@ server:
   port: 8081
 
 springdoc:
-  swagger-ui:
-    url: "/api/openapi.yaml"
+  api-docs:
+    path: /api/v1/career-service/v3/api-docs
 
 logging:
   level:
