@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Executive CV</title>
+    <meta content="width=device-width,initial-scale=1" name="viewport"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 4mm 4mm;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        body {
+            font-family: "Inter", "Segoe UI", "Helvetica Neue", sans-serif;
+            font-size: 11pt;
+            color: #222;
+            margin: 0;
+            background: #fff;
+        }
+
+        .sheet {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 6mm;
+            background: #fff;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: #fff;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .name {
+            font-size: 22pt;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .role {
+            font-size: 11pt;
+            font-style: italic;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .contact {
+            font-size: 9.5pt;
+            margin-top: 10px;
+            color: #f0f0f0;
+        }
+
+        /* Horizontal layout for Languages, Education, and Certifications */
+        .section.languages div,
+        .section.education,
+        .section.certifications {
+            text-align: left;
+        }
+
+        .section.languages div > div,
+        .section.education .entry,
+        .section.certifications .entry {
+            display: inline-block;
+            vertical-align: top;
+            width: 31%; /* adjust based on how many columns you want */
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .contact span {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            gap: 16px;
+        }
+
+        .left, .right {
+            vertical-align: top;
+        }
+
+        .section {
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 3px;
+            margin-bottom: 6px;
+        }
+
+        .summary {
+            font-style: italic;
+            color: #444;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+
+        .entry {
+            margin-bottom: 8px;
+        }
+
+        .entry-title {
+            font-weight: 700;
+            color: #000;
+        }
+
+        .entry-sub {
+            color: #555;
+            font-size: 10pt;
+        }
+
+        .entry-meta {
+            font-size: 9.5pt;
+            color: #777;
+            font-style: italic;
+        }
+
+        ul.compact {
+            margin: 6px 0 8px 18px;
+            line-height: 1.2;
+        }
+
+        .tag {
+            background: #2c3e50;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 9pt;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .muted {
+            color: #666;
+            font-size: 9pt;
+        }
+
+    </style>
+</head>
+<body>
+<div class="sheet">
+    <!-- HEADER -->
+    <div class="header">
+        <h1 class="name" th:text="${cv.personalInfo.firstName + ' ' + cv.personalInfo.lastName}">Name Surname</h1>
+        <div class="role" th:if="${cv.personalInfo.role}" th:text="${cv.personalInfo.role}">Role / Position</div>
+        <div class="contact">
+            <span th:text="${cv.personalInfo.email}">email@example.com</span>
+            <span th:if="${cv.personalInfo.phone}" th:text="${cv.personalInfo.phone}">+00 000 000 000</span>
+            <span th:if="${cv.personalInfo.linkedIn}"
+                  th:text="'LinkedIn: ' + ${cv.personalInfo.linkedIn}">LinkedIn</span>
+            <span th:if="${cv.personalInfo.github}" th:text="'GitHub: ' + ${cv.personalInfo.github}">GitHub</span>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+        <div class="left">
+            <section class="section" th:if="${cv.personalInfo.summary}">
+                <div class="section-title" th:text="${translations.get('ABOUT_ME')}">About Me</div>
+                <div class="summary" th:text="${cv.personalInfo.summary}">Short description</div>
+            </section>
+
+            <section class="section"
+                     th:if="${!#lists.isEmpty(cv.skills) or !#lists.isEmpty(matchedSkills)}">
+                <div class="section-title" th:text="${translations.get('CORE_SKILLS')}">Skills</div>
+                <div>
+                    <span class="tag"
+                          th:each="s : ${!#lists.isEmpty(matchedSkills) ? matchedSkills : cv.skills}"
+                          th:text="${s}">Skill</span>
+                </div>
+            </section>
+
+            <section class="section languages" th:if="${!#lists.isEmpty(cv.languages)}">
+                <div class="section-title" th:text="${translations.get('LANGUAGES')}">Languages</div>
+                <div>
+                    <div th:each="lang : ${cv.languages}"
+                         th:text="${lang.language + ' — ' + (lang.level != null ? lang.level : '')}">English — C1
+                    </div>
+                </div>
+            </section>
+
+            <section class="section certifications" th:if="${!#lists.isEmpty(cv.certifications)}">
+                <div class="section-title" th:text="${translations.get('CERTIFICATIONS')}">Certifications</div>
+                <div class="entry" th:each="cert : ${cv.certifications}">
+                    <div class="entry-title small" th:text="${cert.name}">Cert name</div>
+                    <div class="entry-sub small" th:text="${cert.issuer}">Issuer</div>
+                    <div class="entry-meta small" th:if="${cert.date}"
+                         th:text="${#temporals.format(cert.date, 'MMM yyyy')}">Date
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="right">
+            <section class="section" th:if="${!#lists.isEmpty(cv.experience)}">
+                <div class="section-title" th:text="${translations.get('WORK_EXPERIENCE')}">Experience</div>
+                <div th:each="exp : ${cv.experience}">
+                    <div class="entry">
+                        <div class="entry-title" th:text="${exp.position}">Position</div>
+                        <div class="entry-sub">
+                            <span th:text="${exp.company}">Company</span>
+                            <span th:if="${exp.location}"> — <span th:text="${exp.location}">Location</span></span>
+                        </div>
+                        <div class="entry-meta"
+                             th:text="${#temporals.format(exp.startDate, 'MMM yyyy') + ' – ' + (#temporals.format(exp.endDate, 'MMM yyyy') ?: 'Present')}">
+                            Dates
+                        </div>
+                        <ul class="compact" th:if="${!#lists.isEmpty(exp.summaries)}">
+                            <li th:each="s : ${exp.summaries}">
+                                <span th:text="${s.text}">Achievement</span>
+                                <span class="muted" th:if="${!#lists.isEmpty(s.technologies)}"
+                                      th:text="' [' + ${#strings.listJoin(s.technologies, ', ')} + ']'">Tech</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" th:if="${!#lists.isEmpty(cv.projects)}">
+                <div class="section-title" th:text="${translations.get('PROJECTS')}">Projects</div>
+                <div th:each="p : ${cv.projects}">
+                    <div class="entry">
+                        <div class="entry-title" th:text="${p.name}">Project</div>
+                        <div class="entry-sub small" th:if="${p.url}">
+                            <a style="color:#2c3e50;text-decoration:none;" th:href="${p.url}"
+                               th:text="${p.url}"></a>
+                        </div>
+                        <ul class="compact" th:if="${!#lists.isEmpty(p.summaries)}">
+                            <li th:each="s : ${p.summaries}">
+                                <span th:text="${s.text}">Desc</span>
+                                <span class="muted" th:if="${!#lists.isEmpty(s.technologies)}"
+                                      th:text="' [' + ${#strings.listJoin(s.technologies, ', ')} + ']'">Tech</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section education" th:if="${!#lists.isEmpty(cv.education)}">
+                <div class="section-title" th:text="${translations.get('EDUCATION')}">Education</div>
+                <div class="entry" th:each="edu : ${cv.education}">
+                    <div class="entry-title" th:text="${edu.degree}">Degree</div>
+                    <div class="entry-sub small" th:text="${edu.school}">School</div>
+                    <div class="entry-meta small"
+                         th:text="${#temporals.format(edu.startDate, 'yyyy') + ' – ' + (#temporals.format(edu.endDate, 'yyyy') ?: 'Present')}">
+                        Dates
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>
